@@ -1,22 +1,37 @@
 // testing custom hooks
 // http://localhost:3000/counter-hook
 
-import * as React from 'react'
-import {render, screen} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import useCounter from '../../components/use-counter'
+import {renderHook, act} from '@testing-library/react-hooks'
 
-// 🐨 create a simple function component that uses the useCounter hook
-// and then exposes some UI that our test can interact with to test the
-// capabilities of this hook
-// 💰 here's how to use the hook:
-// const {count, increment, decrement} = useCounter()
+// function setup(...args) {
+//   const returnVal = {}
+//   function TestComponent() {
+//     Object.assign(returnVal, useCounter(...args))
+//     return null
+//   }
+//   render(<TestComponent />)
+//   return returnVal
+// }
 
-test('exposes the count and increment/decrement functions', () => {
-  // 🐨 render the component
-  // 🐨 get the elements you need using screen
-  // 🐨 assert on the initial state of the hook
-  // 🐨 interact with the UI using userEvent and assert on the changes in the UI
+test('allows customization of the initial count', () => {
+  const {result} = renderHook(() => useCounter({initialCount: 3}))
+
+  expect(result.current.count).toBe(3)
+  act(() => result.current.increment())
+  expect(result.current.count).toBe(4)
+  act(() => result.current.decrement())
+  expect(result.current.count).toBe(3)
+})
+
+test('allows customization of the step', () => {
+  const {result} = renderHook(() => useCounter({step: 2}))
+
+  expect(result.current.count).toBe(0)
+  act(() => result.current.increment())
+  expect(result.current.count).toBe(2)
+  act(() => result.current.decrement())
+  expect(result.current.count).toBe(0)
 })
 
 /* eslint no-unused-vars:0 */
